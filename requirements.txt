@@ -9,3 +9,4 @@ urllib3==1.26.15
 gunicorn
 psycopg2
 cohere==5.13.11
+werkzeug==2.2.2
