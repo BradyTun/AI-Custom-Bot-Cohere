@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-8 flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Your Chat Bots</h1>
+    <a href="/create" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md flex items-center transition-colors">
+        <svg class="w-5 h-5 mr-2">
+            <use href="#icon-plus" />
+        </svg>
+        New Bot
+    </a>
+</div>
+
+<!-- User Bots -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for bot in user_bots %}
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center">
+                {% if bot.profile_pic %}
+                <img src="/{{ bot.profile_pic }}" alt="Profile Picture" class="w-12 h-12 rounded-full object-cover mr-3">
+                {% else %}
+                <div class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold mr-3">
+                    {{ bot.name[:1] }}
+                </div>
+                {% endif %}
+                <div>
+                    <h3 class="text-xl font-semibold mb-1">{{ bot.name }}</h3>
+                    <span class="text-sm px-2 py-1 rounded-full {{ 'bg-green-800 text-green-300' if bot.is_public else 'bg-gray-700 text-gray-300' }}">
+                        {{ 'Public' if bot.is_public else 'Private' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <p class="text-gray-400 text-sm mb-4 line-clamp-3">{{ bot.personality }}</p>
+        <a href="/chat/{{ bot.id }}" class="block w-full text-center bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md transition-colors">
+            Open Chat
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Public Bots -->
+<h2 class="text-2xl font-bold mt-12 mb-6">Public Chat Bots</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for bot in public_bots %}
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center">
+                {% if bot.profile_pic %}
+                <img src="/{{ bot.profile_pic }}" alt="Profile Picture" class="w-12 h-12 rounded-full object-cover mr-3">
+                {% else %}
+                <div class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold mr-3">
+                    {{ bot.name[:1] }}
+                </div>
+                {% endif %}
+                <div>
+                    <h3 class="text-xl font-semibold mb-1">{{ bot.name }}</h3>
+                    <span class="text-sm text-gray-400">by @{{ bot.author.username }}</span>
+                </div>
+            </div>
+        </div>
+        <p class="text-gray-400 text-sm mb-4 line-clamp-3">{{ bot.personality }}</p>
+        <a href="/chat/{{ bot.id }}" class="block w-full text-center bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-md transition-colors">
+            Try Bot
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Define SVG Icons -->
+<svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+    <symbol id="icon-plus" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </symbol>
+</svg>
+{% endblock %}

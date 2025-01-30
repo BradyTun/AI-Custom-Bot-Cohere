@@ -1,0 +1,11 @@
+flask==2.2.2
+flask-sqlalchemy==2.5.1
+sqlalchemy==1.4.45
+flask-session
+flask-migrate==4.0.7
+python-dotenv
+requests==2.28.1
+urllib3==1.26.15
+gunicorn
+psycopg2
+cohere==5.13.11

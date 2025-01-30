@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Create New Chat Bot</h1>
+    
+    <form method="POST" enctype="multipart/form-data" class="space-y-6" id="bot-form">
+        <div>
+            <label class="block text-sm font-medium mb-2">Bot Name</label>
+            <input type="text" name="name" required
+                   class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium mb-2">Personality Description</label>
+            <textarea name="personality" rows="5" required
+                      class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      placeholder="Example: Friendly AI assistant who speaks in rhymes..."></textarea>
+        </div>
+
+        <!-- Profile Picture Upload -->
+        <div>
+            <label class="block text-sm font-medium mb-2">Profile Picture</label>
+            <input type="file" id="profile-pic-input" accept="image/*" class="hidden">
+            <div class="relative w-32 h-32 rounded-full border border-gray-600 overflow-hidden">
+                <img id="profile-pic-preview" class="w-full h-full object-cover" src="/static/default-avatar.png" alt="Profile Picture">
+                <button type="button" onclick="document.getElementById('profile-pic-input').click()" 
+                        class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-sm opacity-0 hover:opacity-100 transition-opacity">
+                    Change
+                </button>
+            </div>
+        </div>
+
+        <!-- Cropping Modal -->
+        <div id="cropper-modal" class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h2 class="text-lg font-bold mb-4">Crop Profile Picture</h2>
+                <div class="w-64 h-64">
+                    <img id="cropper-image" class="max-w-full">
+                </div>
+                <div class="flex justify-end mt-4 space-x-4">
+                    <button type="button" onclick="closeCropper()" class="px-4 py-2 bg-gray-600 rounded-md">Cancel</button>
+                    <button type="button" onclick="cropImage()" class="px-4 py-2 bg-blue-500 rounded-md">Crop</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center">
+            <input type="checkbox" name="is_public" id="is_public"
+                   class="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-700 rounded focus:ring-indigo-500">
+            <label for="is_public" class="ml-2 text-sm">Make this bot public</label>
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-md font-medium transition-colors">
+            Create Chat Bot
+        </button>
+
+        <!-- Hidden input for cropped image -->
+        <input type="hidden" name="cropped_image" id="cropped-image">
+    </form>
+</div>
+
+
+<script>
+    let cropper;
+    const profilePicInput = document.getElementById('profile-pic-input');
+    const profilePicPreview = document.getElementById('profile-pic-preview');
+    const cropperModal = document.getElementById('cropper-modal');
+    const cropperImage = document.getElementById('cropper-image');
+    const croppedImageInput = document.getElementById('cropped-image');
+
+    profilePicInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                cropperImage.src = e.target.result;
+                cropperModal.classList.remove('hidden');
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 2,
+                    preview: '.crop-preview'
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function closeCropper() {
+        cropperModal.classList.add('hidden');
+        profilePicInput.value = ''; // Reset file input if user cancels
+    }
+
+    function cropImage() {
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300
+        });
+
+        // Convert canvas to data URL
+        const croppedDataURL = canvas.toDataURL('image/png');
+        profilePicPreview.src = croppedDataURL;
+        croppedImageInput.value = croppedDataURL; // Store base64 image in hidden input
+
+        closeCropper();
+    }
+</script>
+{% endblock %}
