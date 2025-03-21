@@ -1,5 +1,5 @@
 
-# **AIONAT - AI Chatbot Platform**
+# **AI Chatbot Platform**
 
 AIONAT is a **Flask-based AI chatbot platform** that allows users to create, edit, and interact with their AI-powered chatbots. The project integrates **Cohere AI** for generating bot responses and supports **profile picture uploads** with cropping functionality.
 
